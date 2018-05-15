@@ -1,0 +1,21 @@
+# Visual Studio #
+##########################
+*.vcproj
+*.vcxproj
+*.ncb
+*.user
+*.sln
+*.suo
+*.db
+*.filters
+*.filters
+*.opendb
+bin/
+obj/
+.vs/
+
+# Compiler files #
+##################
+*.elf
+*.abs
+*.map
