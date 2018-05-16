@@ -12,9 +12,9 @@ int main()
 	int procNo=halGetProcessorNo();
 	int* sharedBuffer;
 	int  sharedSize32;
-	int ok=(0,0,&sharedBuffer,&sharedSize32);
 	nm64s* srcFrm=(nm64s*)sharedBuffer;
 	nm64s* dstFrm=srcFrm+srcFrmSize/64;
+	int ok=0;
 
 	unsigned int* procCounter = (unsigned int*) (sharedBuffer + srcFrmSize/32+ dstFrmSize/32) ;
 	unsigned int* timer = (unsigned int*) procCounter + 4;

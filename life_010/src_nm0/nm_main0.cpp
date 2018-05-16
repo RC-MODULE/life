@@ -11,7 +11,6 @@ int main()
 {  
 	int procNo=halGetProcessorNo();
 	int* sharedBuffer=halMalloc32(srcFrmSize/32 + dstFrmSize/32 +4 +4);
-	(sharedBuffer, srcFrmSize/32 + dstFrmSize/32+4+4);
 	nm64s* srcFrm=(nm64s*)sharedBuffer;
 	nm64s* dstFrm=srcFrm+srcFrmSize/64;
 

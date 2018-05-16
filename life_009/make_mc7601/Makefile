@@ -35,7 +35,7 @@ SRC_ASM = $(wildcard $(addsuffix /*.asm,../src_life_nm))
 
 ALL: $(TARGET0) $(TARGET1)   $(HOST)
 $(TARGET0): $(SRC_CPP0) $(SRC_ASM0) $(CFG) Makefile
-	nmcc -o$(TARGET0) -m.main.map  $(SRC_CPP0) $(SRC_ASM)  -nmc3 -g -O0 $(INC_DIRS) $(LIB_DIRS) $(LIBS) -c$(CFG) -heap=2000000 -heap1=32000 -heap2=32000 -heap3=32000
+	nmcc -o$(TARGET0) -m.main.map  $(SRC_CPP0) $(SRC_ASM)  -nmc3 -g -O0 $(INC_DIRS) $(LIB_DIRS) $(LIBS) -c$(CFG) -heap=90000 -heap1=32000 -heap2=32000 -heap3=32000
 	
 $(TARGET1): $(SRC_CPP1) $(SRC_ASM) $(CFG) Makefile
 	nmcc -o$(TARGET1) -m.main1.map $(SRC_CPP1) $(SRC_ASM)  -nmc3 -g -O0 $(INC_DIRS) $(LIB_DIRS) $(LIBS) -c$(CFG) -heap=10000   -heap1=32000 -heap2=32000 -heap3=32000
