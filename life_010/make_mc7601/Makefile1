@@ -1,0 +1,56 @@
+ROOT = ../..
+include $(ROOT)/global.mk
+#-include ../local.mk
+# BUILD AND RUN MAKEFILE
+# This makefile builds simple nmc-application containing single cpp-file  
+# Rule 'run' executes the application on MC12101 board and stores return code in ".exitcode"  file
+
+.SUFFIXES:
+
+
+ifndef MC12101
+$(warning *** WARNING: 'MC12101' environment variable is not defined! Board SDK might not have installed correctly. )
+endif 
+
+
+
+BOARD    = life-mc7601-nmc3-1
+HOST     = $(BOARD)-x86
+
+
+TARGET   = life1.abs
+INC_DIRS = -I"$(MC7601)/include" -I$(NMPP)/include -I$(HAL)/include -I"../src_life_common"
+LIB_DIRS = -L"$(MC7601)/lib" -L$(NMPP)/lib -L$(HAL)/lib 
+LIBS     = hal-mc7601.lib mc7601_ll_nm.lib libint_soc.lib nmpp-nmc3.lib 
+CFG      = mc7601brd.cfg
+SRC_DIR  = ../src_life_nm ../src_life_common ../src_nm0
+SRC_CPP  = $(wildcard $(addsuffix /*.cpp,$(SRC_DIR))) 
+SRC_ASM  = $(wildcard $(addsuffix /*.asm,$(SRC_DIR)))
+BUILDER          = linker
+HEAP = -heap=10000   -heap1=32000 -heap2=32000 -heap3=32000
+BUILDER_FLAGS    = -m.main1.map -c$(CFG)  -full_names $(HEAP) -o$(TARGET) $(LIB_DIRS)
+
+
+
+ALL: $(TARGET) 
+$(TARGET): $(SRC_INC) $(SRC_CPP) $(SRC_ASM) $(CFG) Makefile1
+	nmcc -o$(TARGET) -m.main1.map $(SRC_CPP) $(SRC_ASM)  -nmc3 -O2 $(INC_DIRS) $(LIB_DIRS) $(LIBS) -c$(CFG) $(HEAP) -full_names
+
+
+PATH:=$(MC12101)/bin;$(PATH)
+
+
+clean:
+	-$(OS_RM) *.abs *.elf *.ncb *.map *.elf *.suo *.user *.filters
+	-$(OS_RD) bin obj
+	
+kill: clean
+	-$(OS_RM) *.vcproj *.sln *.vcxproj
+	
+	
+$(HOST).vcproj vs2005:	premake5.lua 
+	premake5 vs2005
+	
+$(HOST).vcxproj  vs2015:	premake5.lua 
+	premake5 vs2015
+

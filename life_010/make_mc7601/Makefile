@@ -1,57 +1,33 @@
 ROOT = ../..
 include $(ROOT)/global.mk
-#-include ../local.mk
-HEAP ?= -heap=16384 -heap1=16384 -heap2=16384 -heap3=16384
 # BUILD AND RUN MAKEFILE
 # This makefile builds simple nmc-application containing single cpp-file  
-# Rule 'run' executes the application on MC5103 board and stores return code in ".exitcode"  file
+# Rule 'run' executes the application on MC12101 board and stores return code in ".exitcode"  file
 
 .SUFFIXES:
 
 
-ifndef MC7601
-$(error ERROR: 'MC7601' environment variable is not defined!  )
+ifndef MC12101
+$(warning *** WARNING: 'MC12101' environment variable is not defined! Board SDK might not have installed correctly. )
 endif 
-
 
 BOARD    = life-mc7601
 HOST     = $(BOARD)-x86
 
+TARGET0  = main0.abs
+TARGET1  = main1.abs
+
 VS ?= vs2005 
+#PATH:=$(MC12101)/bin;$(PATH)
+all: $(TARGET0) $(TARGET1)  $(HOST)
 
-TARGET0  = life0.abs
-TARGET1  = life1.abs
-INC_DIRS = -I"$(MC7601)/include" 	-I"$(NMPP)/include" -I"$(HAL)/include" -I"$(NEURO)/include" -I../src_life_common 
-LIB_DIRS = -L"$(MC7601)/lib" 		-L"$(NMPP)/lib"		-L"$(HAL)/lib" -L"$(NEURO)/lib" 
-LIBS     = nmpp-nmc3.lib mc7601_LL_NM.lib libint_soc.lib hal-mc7601.lib
-CFG      = mc7601brd.cfg
+nm0 $(TARGET0): 
+	$(MAKE) -f Makefile0 
 
-SRC_CPP0 =  $(wildcard $(addsuffix /*.cpp,../src_life_common))
-SRC_CPP0 += $(wildcard $(addsuffix /*.cpp,../src_nm0))
-SRC_CPP1 =  $(wildcard $(addsuffix /*.cpp,../src_life_common))
-SRC_CPP1 += $(wildcard $(addsuffix /*.cpp,../src_nm1))
-SRC_ASM = $(wildcard $(addsuffix /*.asm,../src_life_nm))
-
-
-ALL: $(TARGET0) $(TARGET1)   $(HOST)
-$(TARGET0): $(SRC_CPP0) $(SRC_ASM0) $(CFG) Makefile
-	nmcc -o$(TARGET0) -m.main.map  $(SRC_CPP0) $(SRC_ASM)  -nmc3 -g -O0 $(INC_DIRS) $(LIB_DIRS) $(LIBS) -c$(CFG) -heap=90000 -heap1=32000 -heap2=32000 -heap3=32000
+nm1 $(TARGET1):
+	$(MAKE) -f Makefile1
 	
-$(TARGET1): $(SRC_CPP1) $(SRC_ASM) $(CFG) Makefile
-	nmcc -o$(TARGET1) -m.main1.map $(SRC_CPP1) $(SRC_ASM)  -nmc3 -g -O0 $(INC_DIRS) $(LIB_DIRS) $(LIBS) -c$(CFG) -heap=10000   -heap1=32000 -heap2=32000 -heap3=32000
-
-
-
-PATH:=$(MC7601)/bin;$(PATH)
-
-
-
-run: $(TARGET0) $(TARGET1) $(HOST)
-	bin\debug\$(HOST)
-	
-
-$(HOST): $(VS)
-	
+host $(HOST): $(VS)
 
 vs2005: $(HOST).vcproj 
 	"$(VS80COMNTOOLS)vsvars32" && vcbuild $(HOST).vcproj
@@ -64,5 +40,9 @@ $(HOST).vcproj:
 
 $(HOST).vcxproj:
 	premake5 vs2015
+
+
+run: $(TARGET0) $(TARGET1) $(HOST)
+	bin\debug\$(HOST)
 	
 include $(ROOT)/clean.mk

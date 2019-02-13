@@ -1,3 +1,7 @@
+// Сумма трех 4-хразрядных массивов
+// void add3v_4s(nm4s* SrcVec1, nm4s* SrcVec2, nm4s* SrcVec3, nm4s* DstVec, int nSize)
+//
+//
 global _add3v_4s:label;
 
 macro add3v_4s_tail(N)
@@ -25,22 +29,23 @@ begin ".text_life"
 	ar6 = [--ar5];	//result
 	gr0 = [--ar5];	//size
 	nb1=88888888h	with	gr0>>=4;
-	gr1=gr0>>5;
+	gr1=gr0>>5;		//счетчик по rep 32
 	wtw;
 	gr1--;
 <Next32>
 	rep 32 ram  = [ar0++];
 	rep 32 data = [ar1++] with ram + data;
 	if > delayed goto Next32 with gr1--;
-		rep 32 data = [ar2++] with data+afifo;
+		rep 32 data = [ar2++] with data + afifo;
 		rep 32 [ar6++]= afifo;
-	
+
+//обработка хвоста	
 	Tail:label;
 	Tail_End: label;
 	gr1=gr0>>5;
 	gr1<<=5;
-	ar3=Tail with gr3=gr0-gr1;
-	gr3<<=3;	
+	ar3=Tail with gr3=gr0-gr1;		//остаток
+	gr3<<=3;			//размер макроса составляет 8 инструкций
 	ar3+=gr3;
 	delayed goto ar3;
 		nul;

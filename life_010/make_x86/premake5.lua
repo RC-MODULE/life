@@ -35,7 +35,7 @@ solution "life-board-target0"
    project "life-board-target0"
       kind "ConsoleApp"
       language "C++"
-      files { "../src_life_common/*.h", "../src_nm0/*.cpp", "../src_life_pc/*.cpp", "../src_life_common/*.cpp",  "$(HAL)/src/x86/hal-x86target.cpp" }
+      files { "../src_life_common/*.h", "../src_nm0/*.cpp", "../src_life_pc/*.cpp", "../src_life_common/*.cpp"}
 	  libdirs { "$(VSHELL32)/lib", "$(NMPP)/lib" }
 
       configuration "Debug"
@@ -61,7 +61,7 @@ solution "life-board-target1"
    project "life-board-target1"
       kind "ConsoleApp"
       language "C++"
-      files { "../src_life_common/*.h", "../src_nm1/*.cpp", "../src_life_common/*.cpp", "../src_life_pc/*.cpp" , "$(HAL)/src/x86/hal-x86target.cpp"}
+      files { "../src_life_common/*.h", "../src_nm1/*.cpp", "../src_life_common/*.cpp", "../src_life_pc/*.cpp" }
 	  libdirs { "$(VSHELL32)/lib", "$(NMPP)/lib" }
 
       configuration "Debug"

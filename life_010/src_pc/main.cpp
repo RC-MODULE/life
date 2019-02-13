@@ -34,8 +34,10 @@ void Inv_1(nm1* pSrcVec,nm1* pDstVec,int nSize)
 
 int main()
 {
-	halOpen(PROGRAM0,PROGRAM1,NULL);
-//	halOpen(PROGRAM,NULL);
+	if (halOpen(PROGRAM0, PROGRAM1, NULL)) {
+		//printf("Connection to mc7601 error!");
+		return -1;
+	}
 
 	int handshake= halSync(0xC0DE0086,0);
 	if (handshake!=0xC0DE6406){
