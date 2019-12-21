@@ -1,6 +1,8 @@
 #include "malloc32.h"
 #include "life.h"
 #include <stdio.h>
+#include "hal_target.h"
+#include "led.h"
 //#include "VShell.h"
 #define ENABLE_ASSERTE
 #include <crtdbg2.h>
@@ -31,13 +33,25 @@ int lifeInit(int fullWidth, int fullHeight,int smallWidth,int smallHeight, LifeS
 
 	int SizeAnd4Line = (spec->widthWindow+2*spec->xBorder)*(spec->heightWindow+2*spec->yBorder+4);
 
-	spec->pool1 = nmppsMalloc_4u(SizeAnd4Line);
-	spec->pool2 = nmppsMalloc_4u(SizeAnd4Line);
-	spec->pool3 = nmppsMalloc_4u(SizeAnd4Line);
-	spec->extWindow= nmppsMalloc_1(SizeAnd4Line);
+	nmc_malloc_set_heap(1);
+	spec->pool1 = halMalloc32(SizeAnd4Line / 8);
+	nmc_malloc_set_heap(2);
+	spec->pool2 = halMalloc32(SizeAnd4Line / 8);
+	nmc_malloc_set_heap(3);
+	spec->pool3 = halMalloc32(SizeAnd4Line / 8);
+	spec->extWindow= halMalloc32(SizeAnd4Line / 32);
 
-	if (nmppsMallocFail())			
-		return -1;
+	if (spec->pool1 == 0)
+		return 1;
+	if (spec->pool2 == 0) {
+		return 2;
+	}
+	if (spec->pool3 == 0) {
+		return 3;
+	}
+	if (spec->extWindow == 0) {
+		return 4;
+	}
 		
 	nmppsSet_8u((nm8u*) spec->pool1,  0, SizeAnd4Line/2);
 	spec->temp1 = nmppsAddr_4u((nm4u*)spec->pool1	,2*(spec->widthWindow+2*spec->xBorder));

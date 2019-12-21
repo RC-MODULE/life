@@ -9,6 +9,7 @@
 #include "hal_host.h"
 #include "VShell.h"
 #include "nmpp.h"
+#include "stdio.h"
 
 #define PROGRAM "life.abs"
 
@@ -53,12 +54,13 @@ int main()
 	int size  =width*height;
 
 	VS_CreateImage("Source Image", 1, width, height, VS_RGB1, 0);	// Create window for 8-bit source grayscale image
+	VS_OpRunForward();
 
 	halSync(width);		// Send width to nmc
 	halSync(height);		// Send height to nmc
 	int ok=halSync(0);	// Get	status of memory allocation from nm
 	if (ok!=0x600DB00F){
-	//	printf("Memory allocation error!");
+		printf("Memory allocation error!");
 		return -1;
 	}
 	unsigned srcAddr=halSync(0);

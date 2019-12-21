@@ -3,6 +3,7 @@
 -- A solution contains projects, and defines the available configurations
 solution "life-mc12101"
    configurations { "Debug", "Release" }
+   startproject "life-mc12101-x86"
 
    -- A project defines one build target
    project "life-mc12101-x86"
@@ -11,7 +12,7 @@ solution "life-mc12101"
       files { "**.h", "../src_pc/*.cpp"}
 	  libdirs { "$(MC12101)/lib", "$(VSHELL32)/lib", "$(NMPP)/lib","$(HAL)/lib"  }
 	  includedirs { "$(MC12101)/include", "$(HAL)/include", "$(VSHELL32)/include", "$(NMPP)/include" }
-	  links { "mc12101load.lib", "vshell32.lib", "hal-mc12101-x86.lib", "nmpp-x86.lib", "life-mc12101-nmc4" }
+	  links { "mc12101load.lib", "vshell32.lib", "hal-mc12101-x86d.lib", "nmpp-x86.lib", "life-mc12101-nmc4" }
 
       configuration "Debug"
          defines { "DEBUG","NMPU1" }

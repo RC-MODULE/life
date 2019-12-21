@@ -27,13 +27,13 @@ int main()
 	nmppsSet_64s(srcFrm,0,srcFrmSize/64);
 	nmppsSet_64s(srcFrm,0,dstSize/64);
 	
-	nmppsMallocSetRouteMode();
-	nmppsMallocSpec.route[0]=0x3321;
+	//nmppsMallocSetRouteMode();
+	//nmppsMallocSpec.route[0]=0x3321;
 		
 	LifeSpec specWindow;
 	int smallWidth  = width/4;
 	int smallHeight = height/4;
-	int ok=lifeInit(width, height, smallWidth, smallHeight, &specWindow);
+	int ok = lifeInit(width, height, smallWidth, smallHeight, &specWindow);
 	if (ok){
 		halHostSync(ok);	// send error to host
 		return -1;
