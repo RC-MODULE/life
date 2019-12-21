@@ -68,21 +68,16 @@ int main()
 	HalHostRingBuffer hostImageRB;
 	halHostRingBufferInit(&hostImageRB, addrImageRB);
 	
-	nm1* srcFrm=nmppsMalloc_1 (size+256*width+256);
-	nm1* srcImg=nmppsAddr_1(srcFrm,128*width+128);
+	nm1* srcFrm=(nm1*)nmppsMalloc_32s (hostImageRB.size);
+	nm1* srcImg=nmppsAddr_1(srcFrm, width);
 	nm1* dstImg=nmppsMalloc_1 (size);
 
 	int i;
-	nmppsSet_8s((nm8s*) srcFrm,  0, (size+256*width+256)/8);
+	nmppsSet_8s((nm8s*) srcFrm,  0, (hostImageRB.size)/8);
 	nmppsSet_8s((nm8s*) dstImg,  0, size/8);
-
-	for (int i=4;i<height/2;i++)
-	{
-		nmppsSet_32s((nm32s*) srcImg+i*width/32,  0xFFFFFFFF, width/32/2);
-	}
-	nmppsRandUniform_64s((nm64s*)srcImg, size / 64);
+	nmppsRandUniform_64s((nm64s*)srcFrm, hostImageRB.size / 2);
 	
-	halHostRingBufferPush(&hostImageRB, srcImg, 1);
+	halHostRingBufferPush(&hostImageRB, srcFrm, 1);
 	halSync(0);
 
 	while(VS_Run())	{
