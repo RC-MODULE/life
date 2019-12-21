@@ -123,7 +123,7 @@ int lifeRectangle(const nm1* source, nm1* result, LifeSpec* spec)
 {
 	nm1* dst;
 	nm1* src;
-	int nIter=N_ITER;
+	int nIter= N_ITER;
 	int y,x,i;
 	
 	int width = spec->widthWindow;
