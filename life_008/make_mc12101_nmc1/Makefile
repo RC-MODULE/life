@@ -115,6 +115,7 @@ $(TMP_DIR)/%.o: %.cpp
 
 $(TMP_DIR)/%.o: %.c
 	$(CC) $(CC_FLAGS) -c $(<) -o$(@) $(INC_DIRS) -O2
+	
 
 #========================== Visual Studio  ===================
 export ALL_CPP ALL_ASM ALL_C ALL_H
@@ -129,6 +130,12 @@ $(PROVIDER).vcproj :	premake5.lua
 
 vs2015:   $(PROVIDER).vcxproj
 	"$(VS140COMNTOOLS)vsvars32" && msbuild $(PROVIDER).vcxproj
-#	"$(VS140COMNTOOLS)vsvars32" && msbuild $(PROJECT).vcxproj /p:Configuration=Release
+	
+vs2005:   $(PROVIDER).vcproj
+	"$(VS80COMNTOOLS)vsvars32" && msbuild $(PROVIDER).vcproj
+	
+
+run: $(TARGET)
+	bin\debug\$(PROVIDER)
 
 include $(ROOT)/clean.mk

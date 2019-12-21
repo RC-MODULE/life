@@ -72,12 +72,12 @@ int main()
 	int i;
 	nmppsSet_8s((nm8s*) srcFrm,  0, (size+256*width+256)/8);
 	nmppsSet_8s((nm8s*) dstImg,  0, size/8);
-//	nmppsRandUniform_64s((nm64s*) srcImg8, size/64);
 
 	for (int i=4;i<height/2;i++)
 	{
 		nmppsSet_32s((nm32s*) srcImg+i*width/32,  0xFFFFFFFF, width/32/2);
 	}
+	nmppsRandUniform_64s((nm64s*)srcImg, size / 64);
 	
 	halWriteMemBlock((unsigned*)srcImg, srcAddr, size/32);
 	halSync(0);
