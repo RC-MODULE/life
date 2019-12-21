@@ -10,9 +10,9 @@ solution "life-mc12101"
       kind "ConsoleApp"
       language "C++"
       files { "**.h", "../src_pc/*.cpp"}
-	  libdirs { "$(MC12101)/lib", "$(VSHELL32)/lib", "$(NMPP)/lib","$(HAL)/lib"  }
-	  includedirs { "$(MC12101)/include", "$(HAL)/include", "$(VSHELL32)/include", "$(NMPP)/include" }
-	  links { "mc12101load.lib", "vshell32.lib", "hal-mc12101-x86d.lib", "nmpp-x86.lib", "life-mc12101-nmc4" }
+	  libdirs { "$(MC12101)/lib", "$(VSHELL)/lib", "$(NMPP)/lib","$(HAL)/lib"  }
+	  includedirs { "$(MC12101)/include", "$(HAL)/include", "$(VSHELL)/include", "$(NMPP)/include" }
+	  links { "mc12101load.lib", "vshell.lib", "hal-mc12101-x86d.lib", "nmpp-x86.lib", "life-mc12101-nmc4" }
 
       configuration "Debug"
          defines { "DEBUG","NMPU1" }
