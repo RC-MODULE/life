@@ -17,7 +17,7 @@ HOST     = $(BOARD)-x86
 TARGET0  = main0.abs
 TARGET1  = main1.abs
 
-VS ?= vs2005 
+VS ?= vs2015 
 #PATH:=$(MC12101)/bin;$(PATH)
 all: $(TARGET0) $(TARGET1)  $(HOST)
 
