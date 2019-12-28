@@ -12,13 +12,19 @@ HEAP ?= -heap=6384 -heap1=16384 -heap2=16384 -heap3=16384
 TARGET   = life-x86-target
 HOST     = life-x86-host
 
-ALL: $(TARGET) $(HOST)
+vs2015:	
+	premake5 vs2015
+	"$(VS140COMNTOOLS)vsvars32" && msbuild $(HOST).vcxproj   /p:Configuration=Debug
+	"$(VS140COMNTOOLS)vsvars32" && msbuild $(TARGET).vcxproj /p:Configuration=Debug
 
-$(TARGET): $(TARGET).vcproj
+vs2005: 
+	premake5 vs2015
+	"$(VS80COMNTOOLS)vsvars32" && vcbuild $(HOST).vcproj	
 	"$(VS80COMNTOOLS)vsvars32" && vcbuild $(TARGET).vcproj
 	
-$(HOST): $(HOST).vcproj
-	"$(VS80COMNTOOLS)vsvars32" && vcbuild $(HOST).vcproj
+
+
+
 
 run:
 	$(MAKE) -j4 runhost runtarget
@@ -28,13 +34,13 @@ runhost: $(HOST)
 	
 runtarget: $(TARGET) 
 	bin\debug\$(TARGET)
+
+clean:
+	-$(OS_RM) *.abs *.elf *.ncb *.map *.elf *.suo *.user *.filters
+	-$(OS_RD) bin obj
+	
+kill: clean
+	-$(OS_RM) *.vcproj *.sln *.vcxproj
 	
 
-include $(ROOT)/clean.mk
-	
-vs2005:	$(HOST).vcproj
-
-
-$(HOST).vcproj $(TARGET).vcproj:	
-	premake5 vs2005
 

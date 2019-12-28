@@ -10,18 +10,20 @@ solution "life-x86"
       kind "ConsoleApp"
       language "C++"
       files { "**.h", "../src_pc/*.cpp" }
-	  libdirs { "$(VSHELL32)/lib", "$(NMPP)/lib","$(HAL)/lib" }
-	  includedirs { "$(HAL)/include", "$(VSHELL32)/include", "$(NMPP)/include" }
-	  links { "vshell32.lib", "nmpp-x86.lib", "hal-virtual-x86.lib" }
+  	libdirs { "$(VSHELL)/lib", "$(NMPP)/lib","$(HAL)/lib" }
+	includedirs { "$(HAL)/include", "$(VSHELL)/include", "$(NMPP)/include" }
+
 
       configuration "Debug"
          defines { "DEBUG" }
          symbols  "On" 
+	  links { "vshell.lib", "nmpp-x86d.lib", "hal-virtual-x86d.lib" }
 		 
 
       configuration "Release"
          defines { "NDEBUG" }
          symbols  "Off" 
+	  links { "vshell.lib", "nmpp-x86.lib", "hal-virtual-x86.lib" }
 		 
 		 
 		 
@@ -34,17 +36,19 @@ solution "life-x86-target"
       kind "ConsoleApp"
       language "C++"
       files { "../src_life_common/*.h", "../src_nm/*.cpp", "../src_life_pc/*.cpp", "../src_life_common/*.cpp"}
-	  libdirs { "$(VSHELL32)/lib", "$(NMPP)/lib","$(HAL)/lib" }
-	  includedirs { "../src_life_common", "$(HAL)/include", "$(VSHELL32)/include", "$(NMPP)/include"  }
-	  links { "nmpp-x86.lib", "hal-virtual-x86.lib" }
+	  libdirs { "$(NMPP)/lib","$(HAL)/lib" }
+	  includedirs { "../src_life_common", "$(HAL)/include", "$(NMPP)/include"  }
+
 
       configuration "Debug"
          defines { "DEBUG" }
          symbols  "On" 
+	  links { "nmpp-x86d.lib", "hal-virtual-x86d.lib" }
 		 
 
       configuration "Release"
          defines { "NDEBUG" }
          symbols  "Off" 
+	  links { "nmpp-x86.lib", "hal-virtual-x86.lib" }
 		 
 		 

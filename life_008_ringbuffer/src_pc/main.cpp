@@ -10,7 +10,7 @@
 #include "VShell.h"
 #include "nmpp.h"
 #include "stdio.h"
-#include "ringbuffer_host.h"
+#include "ringbuffert.h"
 
 #define PROGRAM "life.abs"
 
@@ -33,6 +33,39 @@ void Inv_1(nm1* pSrcVec,nm1* pDstVec,int nSize)
 	}
 }
 
+#define N_ITER 1
+#define LIFE_WIDTH 1280
+#define LIFE_HEIGHT 960
+#define width  1280
+#define height 960
+#define size  LIFE_WIDTH*LIFE_HEIGHT
+
+struct Life {
+	nm64u dummy0;	// top guard line
+	nm64u mirrorBottom[LIFE_WIDTH*N_ITER / 64];
+	struct  {
+		nm64u top[LIFE_WIDTH*N_ITER / 64];
+		nm64u main[LIFE_WIDTH*LIFE_HEIGHT / 64];
+		nm64u bottom[LIFE_WIDTH*N_ITER / 64];
+	} state;
+	nm64u mirrorTop[LIFE_WIDTH*N_ITER / 64];
+	nm64u dummy1;	// top guard line
+} viewLife, invLife;
+
+
+
+void*  writeMemBlock(const void* src, void* dst, unsigned int size32) {
+	halWriteMemBlock(src, (unsigned int)dst, size32, 0);
+	return 0;
+}
+
+void* readMemBlock(const void* src, void* dst, unsigned int size32) {
+	halReadMemBlock(dst, (unsigned int)src, size32, 0);
+	return 0;
+}
+
+
+
 int main()
 {
 	#ifdef NMPU1
@@ -50,50 +83,33 @@ int main()
 	if(!VS_Init())
 		return 0;
 
-	int width = 1280;
-	int height= 960;
-	int size  = width*height;
 
-	VS_CreateImage("Source Image", 1, width, height, VS_RGB1, 0);	// Create window for 8-bit source grayscale image
+	VS_CreateImage("Source Image", 1, LIFE_WIDTH, LIFE_HEIGHT, VS_RGB1, 0);	// Create window for 8-bit source grayscale image
 	VS_OpRunForward();
 
-	halSync(width);		// Send width to nmc
-	halSync(height);		// Send height to nmc
 	int ok=halSync(0);	// Get	status of memory allocation from nm
 	if (ok!=0x600DB00F){
 		printf("Memory allocation error!");
 		return -1;
 	}
 	unsigned addrImageRB = halSync(0);
-	HalHostRingBuffer hostImageRB;
-	halHostRingBufferInit(&hostImageRB, addrImageRB);
-	
-	nm1* srcFrm=(nm1*)nmppsMalloc_32s (hostImageRB.size);
-	nm1* srcImg=nmppsAddr_1(srcFrm, width);
-	nm1* dstImg=nmppsMalloc_1 (size);
 
-	int i;
-	nmppsSet_8s((nm8s*) srcFrm,  0, (hostImageRB.size)/8);
-	nmppsSet_8s((nm8s*) dstImg,  0, size/8);
-	nmppsRandUniform_64s((nm64s*)srcFrm, hostImageRB.size / 2);
-	
-	halHostRingBufferPush(&hostImageRB, srcFrm, 1);
-	halSync(0);
+	HalRingBufferConnector<Life, 16>  lifeRingBuffer;
+	lifeRingBuffer.connect(addrImageRB, writeMemBlock, readMemBlock);
 
+
+	
 	while(VS_Run())	{
-
-		Inv_1((nm1*)srcImg,(nm1*)dstImg,size);
- 		VS_SetData(1, dstImg);				// Put source image in window ?1
-		
-		//unsigned t = halSync(0);
-		halHostRingBufferPop(&hostImageRB, srcFrm, 1);
-		
+		lifeRingBuffer.pop(&viewLife, 1);
+		Inv_1((nm1*)viewLife.state.top,(nm1*)invLife.state.top,size);
+ 		VS_SetData(1, invLife.state.top);				// Put source image in window ?1
+	
 		//VS_Text("%u clocks per frame , %.2f clocks per pixel, %.2f fps\r\n", t, 1.0*t/size, 320000000.0/t );
 		VS_Draw(VS_DRAW_ALL);
 	}
 	halSync(0xABC00ABC);
 	halClose();
-	nmppsFree(srcFrm);
-	nmppsFree(dstImg);
+	//nmppsFree(srcFrm);
+	//nmppsFree(dstImg);
     return 0;
 }
